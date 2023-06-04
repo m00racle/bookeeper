@@ -1,6 +1,7 @@
 import React from 'react';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import firebaseApp from '../firebase';
+import './component.css';
 
 function SignInWithGoogle() {
   const signInWithGoogle = async () => {
@@ -17,7 +18,9 @@ function SignInWithGoogle() {
   };
 
   return (
-    <button onClick={signInWithGoogle}>Sign in with Google</button>
+    
+      <button className='authButton' onClick={signInWithGoogle}>Sign in with Google</button>
+    
   );
 }
 
