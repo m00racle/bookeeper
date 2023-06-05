@@ -1,14 +1,22 @@
 import React from 'react';
-import SignInWithGoogle from './components/SignInWithGoogle';
-import SignUpWithGoogle from './components/SignUpWithGoogle';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './components/home';
+import Register from './components/register';
 
 function App() {
   return (
-    <div className="App">
+    <>
+    <div>
       <h1>Bookeeper App</h1>
-      <SignInWithGoogle />
-      <SignUpWithGoogle />
-    </div>
+      </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
+    </>
   );
 }
 

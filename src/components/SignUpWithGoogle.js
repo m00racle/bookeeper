@@ -17,7 +17,9 @@ function SignUpWithGoogle() {
   };
 
   return (
-    <button className='authButton' onClick={signUpWithGoogle}>Sign up with Google</button>
+    <div className='authButton'>
+      <button onClick={signUpWithGoogle}>Sign up with Google</button>
+      </div>
   );
 }
 
