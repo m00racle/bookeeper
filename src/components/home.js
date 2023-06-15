@@ -12,6 +12,7 @@ function Home() {
     };
     return (
         <>
+        <h2>Login Home</h2>
         <SignInWithGoogle />
         <div className="authButton">
             <button onClick={clickRegisterHandler}>Register</button>
