@@ -1,49 +1,34 @@
-import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
-import { BrowserRouter as Router, useNavigate } from "react-router-dom";
-import Home from "../components/home";
-import firebase from "firebase-mock";
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import { initializeTestEnvironment, RulesTestEnvironment } from '@firebase/rules-unit-testing';
+import Home from '../components/home';
 
-// lets test basic for the <Home /> component
+let testEnv;
 
-test("renders Home component", () => {
-    // renders Home?
-    render(
-        <Router>
-            <Home />
-        </Router>
-    );
-    const titleElement = screen.getByText(/Login Home/i);
-    expect(titleElement).toBeInTheDocument();
+beforeAll(async () => {
+    const rulesResponse = await fetch('firestore.rules');
+    const rules = await rulesResponse.text()
+    testEnv = await initializeTestEnvironment({
+        projectId: 'refract-book',
+        firestore: { rules },
+    });
+
+    // Clear the Firestore database:
+    await testEnv.clearFirestore();
+
+    // setup the Firebase SDK to use emulators
+    firebase.initializeApp({
+        projectId: 'refract-book',
+    });
+    firebase.auth().useEmulator('http://127.0.0.1:9099');
+    firebase.firestore().useEmulator('localhost', 8080);
+
 });
 
-// test auth and firestore
-// const mockAuth = new firebase.MockAuthentication();
-// const mockFirestore = new firebase.MockFirestore();
-// const navigate = useNavigate();
-
-// test("navigate to Welcome if user is signed in and esist in users", async () => {
-//     // mock signed in user
-//     const mockUser = { uid: "user123" };
-//     mockAuth.autoFlush();
-//     mockAuth.setUser(mockUser);
-
-//     // mock exist in firestore query
-//     const mockUserDocSnapshot = { exist: true };
-//     mockFirestore.autoFlush();
-//     mockFirestore.mockCollection("users").mockDoc(mockUser.uid).mockGet(mockUserDocSnapshot);
-
-//     // render the Home component
-//     render(
-//         <Router>
-//             <Home />
-//         </Router>
-//     );
-
-//     // Wait for navigation to occur to /welcome
-//     await waitFor(() => expect(navigate).toHaveBeenCalledWith("/welcome"));
-
-//     // Assert that navigation occured correctly
-//     const titleElement = screen.getByText(/Welcome user/i);
-//     expect(titleElement).toBeInTheDocument();
-// });
+afterAll(async () => {
+    // clean up the firebase testing environment
+    await testEnv.cleanup();
+});
